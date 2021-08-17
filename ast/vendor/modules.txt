@@ -1,0 +1,20 @@
+# cal v0.0.0 => ../cal
+## explicit
+cal
+# github.com/antonmedv/expr v1.8.9
+github.com/antonmedv/expr
+github.com/antonmedv/expr/ast
+github.com/antonmedv/expr/checker
+github.com/antonmedv/expr/compiler
+github.com/antonmedv/expr/conf
+github.com/antonmedv/expr/file
+github.com/antonmedv/expr/optimizer
+github.com/antonmedv/expr/parser
+github.com/antonmedv/expr/parser/lexer
+github.com/antonmedv/expr/vm
+# github.com/bwmarrin/snowflake v0.3.0
+## explicit
+github.com/bwmarrin/snowflake
+# github.com/sony/sonyflake v1.0.0
+github.com/sony/sonyflake
+# cal => ../cal
