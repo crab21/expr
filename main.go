@@ -10,11 +10,15 @@ import (
 	"strings"
 )
 
-var expr string
-var tektonPath string
-var chooseValuePath string
+var exprValue string
 
 const pathEnd = "/"
+
+type Exprvalue struct {
+	ValueCompare string
+	TektonPath   string
+	NopFlag      bool
+}
 
 func main() {
 
@@ -27,11 +31,30 @@ func main() {
 	// tektonPathTmp, _ := os.Getwd()
 	// tektonPath = tektonPathTmp + "gogo-test"
 	// chooseValuePath = "a"
+	// exprValue = "W3siVmFsdWVDb21wYXJlIjoiZXlKbGVIQnlWbUZzZFdWeklqcGJJakU5UFRFaVhYMD0iLCJUZWt0b25QYXRoIjoiL3Rla3Rvbi9yZXN1bHRzLzQxMTctYmE4NC1leHByZXNzaW9uLXN0ZXAiLCJOb3BGbGFnIjp0cnVlfSx7IlZhbHVlQ29tcGFyZSI6ImV5SmxlSEJ5Vm1Gc2RXVnpJanBiSWpFaFBURWlYWDA9IiwiVGVrdG9uUGF0aCI6Ii90ZWt0b24vcmVzdWx0cy80YjM2LWJhZmYtZXhwcmVzc2lvbi1zdGVwIiwiTm9wRmxhZyI6dHJ1ZX1d"
 
-	flag.StringVar(&expr, "expr", "", "eg: base64 ")
-	flag.StringVar(&tektonPath, "tektonPath", "", "eg: base64 ")
-	flag.StringVar(&chooseValuePath, "chooseValuePath", "", "eg: base64 ")
+	flag.StringVar(&exprValue, "exprValue", "", "eg: base64 ")
 	flag.Parse()
+
+	value, err := base64.StdEncoding.DecodeString(exprValue)
+	if err != nil {
+		panic("parse base64 exprValue" + err.Error())
+	}
+
+	ev := make([]Exprvalue, 0)
+	_ = json.Unmarshal([]byte(value), &ev)
+	for _, v := range ev {
+		var chooseValuePath string
+		if !v.NopFlag {
+			chooseValuePath = os.Getenv("DELIVER")
+		} else {
+			chooseValuePath = "#{option}"
+		}
+		evalValue(v.ValueCompare, v.TektonPath, chooseValuePath)
+	}
+}
+
+func evalValue(expr string, tektonPath string, chooseValuePath string) {
 
 	if expr == "" || tektonPath == "" || chooseValuePath == "" {
 		panic("expr/tektonPath/chooseValuePath is not allow empty")
