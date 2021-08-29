@@ -13,11 +13,11 @@ func (p *Parser) parse() []*Token {
 		if tok == nil {
 			break
 		}
-		fmt.Println("tok:======>", tok.Tok, "type:====>", tok.Type, "offset:=====>", tok.Offset)
+		//////fmt.Println("tok:======>", tok.Tok, "type:====>", tok.Type, "offset:=====>", tok.Offset)
 		toks = append(toks, tok)
 	}
 
-	fmt.Println("=======================parse end=======================")
+	//////fmt.Println("=======================parse end=======================")
 	return toks
 }
 
@@ -108,7 +108,7 @@ func (p *Parser) nextTok() *Token {
 		'$', '\'', '{', '}', '"', '#':
 		for {
 			// result := p.isDigitNum(p.Ch) && p.nextCh() == nil
-			// fmt.Println(string(p.Ch), string(p.GetAfterCh()), GetTokPrecedence(string(p.GetAfterCh())))
+			//////fmt.Println(string(p.Ch), string(p.GetAfterCh()), GetTokPrecedence(string(p.GetAfterCh())))
 			//if p.GetAfterCh() == 0 || p.GetAfterCh() == ' ' || GetTokPrecedence(string(p.GetAfterCh())) {
 			if p.GetAfterCh() == 0 || GetTokPrecedence(string(p.GetAfterCh())) {
 				p.nextCh()
@@ -287,7 +287,7 @@ func ErrPos(s string, pos int) string {
 // 封装词法分析过程，直接调用该函数即可解析字符串为[]Token
 func Parse(s string) ([]*Token, error) {
 	// 初始化 Parser
-	fmt.Println(s, "===============>ssssssssssssss")
+	//fmt.Println(s, "===============>ssssssssssssss")
 	p := &Parser{
 		Source: s,
 		Err:    nil,
@@ -296,7 +296,7 @@ func Parse(s string) ([]*Token, error) {
 	// 调用 parse 方法
 	toks := p.parse()
 	//if p.Err != nil {
-	//	fmt.Println("====================end=============")
+	//	//fmt.Println("====================end=============")
 	//	return nil, p.Err
 	//}
 	return toks, nil
@@ -361,7 +361,7 @@ func (a *AST) getTokPrecedence() int {
 func (a *AST) parseNumber() NumberExprAST {
 	// f64, err := strconv.ParseFloat(a.currTok.Tok, 64)
 	// if err != nil {
-	// 	fmt.Println(a.currTok.Tok, "==================>")
+	// 	//fmt.Println(a.currTok.Tok, "==================>")
 	// 	a.Err = errors.New(
 	// 		fmt.Sprintf("%v\nwant '(' or '0-9' but  offset:%d get %s %s",
 	// 			err.Error(),
@@ -386,8 +386,8 @@ func (a *AST) parsePrimary() ExprAST {
 	case Operator:
 		// 对 () 语法处理
 		//if a.currTok.Tok == "(" {
-		tt := a.getNextToken()
-		fmt.Println("tttt========>", tt)
+		_ = a.getNextToken()
+		//fmt.Println("tttt========>", tt)
 		e := a.ParseExpression()
 		if e == nil {
 			return nil
@@ -402,7 +402,7 @@ func (a *AST) parsePrimary() ExprAST {
 		a.getNextToken()
 		return e
 		//} else {
-		//	fmt.Println("else.......",a.currTok,a.currTok.Tok,a.currTok.Offset,a.currTok.Type)
+		//	//fmt.Println("else.......",a.currTok,a.currTok.Tok,a.currTok.Offset,a.currTok.Type)
 		//	//e := a.ParseExpression()
 		//	a.getNextToken()
 		//	return nil

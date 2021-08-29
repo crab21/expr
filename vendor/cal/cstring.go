@@ -46,7 +46,7 @@ func CompareString(value []string, compareValue string, operator string, TwoValu
 		panic(err)
 	}
 
-	fmt.Println(output)
+	//fmt.Println(output)
 	return output.(bool)
 }
 

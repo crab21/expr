@@ -2,7 +2,6 @@ package cal
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 )
 
@@ -21,8 +20,8 @@ func TestCompareValues(t *testing.T) {
 		},
 	}
 	v, _ := json.Marshal(a)
-	fmt.Println(CompareValues((a)))
-	fmt.Println(string(v))
+	//fmt.Println(CompareValues((a)))
+	//fmt.Println(string(v))
 
 	b := `{
 		"UniqueID": "1627662612",
@@ -41,5 +40,5 @@ func TestCompareValues(t *testing.T) {
 
 	bs := &CompareValueAndOperator{}
 	_ = json.Unmarshal([]byte(b), bs)
-	fmt.Println(bs.BeCompareValues[0].TwoValuesOperator)
+	//fmt.Println(bs.BeCompareValues[0].TwoValuesOperator)
 }

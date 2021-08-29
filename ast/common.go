@@ -90,7 +90,7 @@ type AST struct {
 func GetUID() string {
 	node, err := snowflake.NewNode(10)
 	if err != nil {
-		fmt.Println(err)
+
 		return ""
 	}
 	id := node.Generate().Int64()

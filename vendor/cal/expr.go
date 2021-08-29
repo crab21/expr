@@ -3,7 +3,6 @@ package cal
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -45,13 +44,13 @@ func main() {
 	// 		},
 	// 	},
 	// }
-	// fmt.Println(CompareValues((a)))
+	//////fmt.Println(CompareValues((a)))
 	// sText := "&&"
 	// textQuoted := strconv.QuoteToASCII(sText)
 	// textUnquoted := textQuoted[1 : len(textQuoted)-1]
-	// fmt.Println(textUnquoted)
+	//////fmt.Println(textUnquoted)
 	// ss, _ := os.Getwd()
-	// fmt.Println(ss)
+	//////fmt.Println(ss)
 	// SaveToResult(true, "task1-output1")
 	var values, compareValue, uniqueID, operator, TwoValuesOperator, CompareSymbol string
 	flag.StringVar(&values, "values", "", `eg: ["a","b"]`)
@@ -63,20 +62,20 @@ func main() {
 	flag.Parse()
 
 	if values == "" || compareValue == "" || operator == "" {
-		fmt.Println("empty value")
+		//fmt.Println("empty value")
 		panic("empty value")
 	}
 
-	fmt.Println(values)
+	//fmt.Println(values)
 
 }
 
 func CalResult(values string, uniqueID, CompareSymbol, compareValue, operator,
 	TwoValuesOperator string) {
-	fmt.Println("enter...........")
+	//fmt.Println("enter...........")
 	value := make([]string, 0)
 	_ = json.Unmarshal([]byte(values), &value)
-	fmt.Println(value)
+	//fmt.Println(value)
 
 	a := CompareValueAndOperator{
 		UniqueID: uniqueID,
@@ -93,7 +92,7 @@ func CalResult(values string, uniqueID, CompareSymbol, compareValue, operator,
 	for _, v := range value {
 		a.Values = append(a.Values, v)
 	}
-	fmt.Println(a)
+	//fmt.Println(a)
 	uinque, result, _ := CompareValues((a))
 
 	SaveToResult(result, uinque)
@@ -129,7 +128,7 @@ func CompareValues(a CompareValueAndOperator) (unique string, result bool, errRe
 			vb = vs
 		}
 		result = CompareBool(values, vb, v.Operator.(string), v.TwoValuesOperator.(string), a.CompareSymbol)
-		fmt.Println("compare value: ", vb, "  v  values:", values, "operator:", v.Operator.(string))
+		//fmt.Println("compare value: ", vb, "  v  values:", values, "operator:", v.Operator.(string))
 	default:
 		var values []string = make([]string, 0, len(a.Values))
 		for _, v := range a.Values {
@@ -152,7 +151,7 @@ func CompareValues(a CompareValueAndOperator) (unique string, result bool, errRe
 		sc = strings.TrimRight(sc, "'")
 		sc = strings.TrimRight(sc, "\"")
 		sc = strings.TrimRight(sc, "\n")
-		fmt.Println("compare value: ", sc, "  v  values:", values, "operator:", v.Operator.(string))
+		//fmt.Println("compare value: ", sc, "  v  values:", values, "operator:", v.Operator.(string))
 		result = CompareString(values, sc, v.Operator.(string), v.TwoValuesOperator.(string), a.CompareSymbol)
 	}
 

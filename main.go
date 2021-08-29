@@ -20,18 +20,13 @@ type Exprvalue struct {
 	NopFlag      bool
 }
 
-func main() {
+type ResultInfo struct {
+	ResultJobID string
+	Result      bool
+}
 
-	// valueCompare := map[string][]string{
-	// 	"exprValues": []string{"#{option}<b"},
-	// }
-	// marshal, _ := json.Marshal(valueCompare)
-	// toString := base64.StdEncoding.EncodeToString(marshal)
-	// exprvalue, err := base64.StdEncoding.DecodeString(toString)
-	// tektonPathTmp, _ := os.Getwd()
-	// tektonPath = tektonPathTmp + "gogo-test"
-	// chooseValuePath = "a"
-	// exprValue = "W3siVmFsdWVDb21wYXJlIjoiZXlKbGVIQnlWbUZzZFdWeklqcGJJakU5UFRFaVhYMD0iLCJUZWt0b25QYXRoIjoiL3Rla3Rvbi9yZXN1bHRzLzQxMTctYmE4NC1leHByZXNzaW9uLXN0ZXAiLCJOb3BGbGFnIjp0cnVlfSx7IlZhbHVlQ29tcGFyZSI6ImV5SmxlSEJ5Vm1Gc2RXVnpJanBiSWpFaFBURWlYWDA9IiwiVGVrdG9uUGF0aCI6Ii90ZWt0b24vcmVzdWx0cy80YjM2LWJhZmYtZXhwcmVzc2lvbi1zdGVwIiwiTm9wRmxhZyI6dHJ1ZX1d"
+func main() {
+	// exprValue = "W3siVmFsdWVDb21wYXJlIjoiZXlKbGVIQnlWbUZzZFdWeklqcGJJakU5UFRFaVhYMD0iLCJUZWt0b25QYXRoIjoiL3Rla3Rvbi9yZXN1bHRzLzRkMGEtOTU4MSIsIk5vcEZsYWciOnRydWV9XQ=="
 
 	flag.StringVar(&exprValue, "exprValue", "", "eg: base64 ")
 	flag.Parse()
@@ -43,18 +38,23 @@ func main() {
 
 	ev := make([]Exprvalue, 0)
 	_ = json.Unmarshal([]byte(value), &ev)
+	resultPath := make([]ResultInfo, 0, len(ev))
 	for _, v := range ev {
 		var chooseValuePath string
+
 		if !v.NopFlag {
 			chooseValuePath = os.Getenv("DELIVER")
 		} else {
 			chooseValuePath = "#{option}"
 		}
-		evalValue(v.ValueCompare, v.TektonPath, chooseValuePath)
+		resultPath = evalValue(resultPath, v.ValueCompare, v.TektonPath, chooseValuePath)
 	}
+
+	vResult, _ := json.Marshal(resultPath)
+	fmt.Println(string(vResult))
 }
 
-func evalValue(expr string, tektonPath string, chooseValuePath string) {
+func evalValue(resultPath []ResultInfo, expr string, tektonPath string, chooseValuePath string) []ResultInfo {
 
 	if expr == "" || tektonPath == "" || chooseValuePath == "" {
 		panic("expr/tektonPath/chooseValuePath is not allow empty")
@@ -64,13 +64,11 @@ func evalValue(expr string, tektonPath string, chooseValuePath string) {
 		panic("parse base64 exprValue" + err.Error())
 	}
 
-	fmt.Println(exprvalue)
 	mp := make(map[string][]string)
 	err = json.Unmarshal(exprvalue, &mp)
 	if err != nil {
 		panic("Unmarshal  exprValue" + err.Error())
 	}
-	fmt.Println(err, mp)
 
 	var optionExpr string = "#{option}"
 	if v, ok := mp["optionExpr"]; ok {
@@ -81,23 +79,25 @@ func evalValue(expr string, tektonPath string, chooseValuePath string) {
 
 	exprvalues := mp["exprValues"]
 	var resultFalg bool
-	fmt.Println("default value:-->", resultFalg)
 	for _, v := range exprvalues {
 		resultv := strings.ReplaceAll(v, optionExpr, string(result))
-		fmt.Println("exprValue: ", resultv)
 		resultv = strings.ReplaceAll(resultv, " ", "")
 		if resultv == "" {
 			continue
 		}
 		rv := ast.Exec(resultv)
-		// fmt.Println("rv for value:----------->", rv, "resultFalg--->", resultFalg)
+		//////fmt.Println("rv for value:----------->", rv, "resultFalg--->", resultFalg)
 		resultFalg = resultFalg || rv
 	}
 
-	fmt.Println("rv==============>", resultFalg)
+	//fmt.Println("rv==============>", resultFalg)
+	lastIndex := strings.LastIndex(tektonPath, "/")
+	if lastIndex != -1 {
+		resultPath = append(resultPath, ResultInfo{strings.TrimRight(tektonPath[lastIndex+1:], "-expression-step"), resultFalg})
+	}
 
 	ast.SaveResultToTektonPath(tektonPath, resultFalg)
-
+	return resultPath
 }
 
 // 判断所给路径文件/文件夹是否存在

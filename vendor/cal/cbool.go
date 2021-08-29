@@ -1,7 +1,5 @@
 package cal
 
-import "fmt"
-
 type TweetBool struct {
 	Len bool
 }
@@ -37,7 +35,7 @@ func ssmain() {
 // 		panic(err)
 // 	}
 
-// 	fmt.Println(output)
+// 	//fmt.Println(output)
 // 	return output.(bool)
 // }
 func CompareBool(value []bool, compareValue bool, operator string, TwoValuesOperator string,
@@ -52,6 +50,6 @@ func CompareBool(value []bool, compareValue bool, operator string, TwoValuesOper
 	default:
 		result = false
 	}
-	fmt.Println(result)
+	//fmt.Println(result)
 	return
 }

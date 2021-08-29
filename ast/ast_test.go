@@ -8,7 +8,7 @@ func TestExec(t *testing.T) {
 	// exp := "1==1 && gogoowang==gogoowang"
 
 	// v:=Exec(exp)
-	// fmt.Println(v)
+	//////fmt.Println(v)
 	// // for i := 0; i < 26; i++ {
 	// // 	a := 97 + i
 	// // 	fmt.Print("'", string(rune(a)), "',")
