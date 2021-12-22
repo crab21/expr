@@ -33,7 +33,7 @@ func Exec(exp string) bool {
 	// []token -> AST Tree
 	ast := NewAST(toks, exp)
 	if ast.Err != nil {
-
+		//fmt.Println("ERROR: " + ast.Err.Error())
 		return false
 	}
 	// AST builder
@@ -42,7 +42,7 @@ func Exec(exp string) bool {
 
 		return false
 	}
-	// fmt.Printf("ExprAST: %+v\n", ar)
+	//fmt.Printf("ExprAST: %+v\n", ar)
 
 	// AST traversal -> result
 	r, paths := ExprASTResult(ar, nil)

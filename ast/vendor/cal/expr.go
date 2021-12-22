@@ -92,7 +92,7 @@ func CalResult(values string, uniqueID, CompareSymbol, compareValue, operator,
 	for _, v := range value {
 		a.Values = append(a.Values, v)
 	}
-	//fmt.Println(a)
+	//fmt.Println("====>", a)
 	uinque, result, _ := CompareValues((a))
 
 	SaveToResult(result, uinque)
@@ -110,6 +110,8 @@ func CompareValues(a CompareValueAndOperator) (unique string, result bool, errRe
 
 		v = a.BeCompareValues[0]
 	)
+
+	//fmt.Println(a)
 
 	switch v.Operator.(string) {
 	case "&&", "&", "||", "|":

@@ -7,7 +7,10 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
+	"unicode"
+	"unicode/utf16"
 )
 
 var exprValue string
@@ -79,14 +82,16 @@ func evalValue(resultPath []ResultInfo, expr string, tektonPath string, chooseVa
 
 	exprvalues := mp["exprValues"]
 	var resultFalg bool
+	//fmt.Println(exprvalues, "=========")
 	for _, v := range exprvalues {
 		resultv := strings.ReplaceAll(v, optionExpr, string(result))
-		resultv = strings.ReplaceAll(resultv, " ", "")
 		if resultv == "" {
 			continue
 		}
+		resultv = IsChineseToString(resultv)
+		//fmt.Println(resultv)
 		rv := ast.Exec(resultv)
-		//////fmt.Println("rv for value:----------->", rv, "resultFalg--->", resultFalg)
+		//fmt.Println("rv for value:----------->", rv, "resultFalg--->", resultFalg, "resultv-->", resultv)
 		resultFalg = resultFalg || rv
 	}
 
@@ -124,4 +129,26 @@ func IsDir(path string) bool {
 // 判断所给路径是否为文件
 func IsFile(path string) bool {
 	return !IsDir(path)
+}
+
+func IsChineseToString(str string) string {
+	var result string
+	for _, v := range str {
+		if unicode.Is(unicode.Han, v) {
+			result += ChinsesToString(string(v))
+			continue
+		}
+		result += string(v)
+	}
+	return result
+}
+
+func ChinsesToString(param string) string {
+	s := utf16.Encode([]rune(param))
+	b := make([]string, 0)
+	for _, v := range s {
+		b = append(b, strconv.FormatUint(uint64(v), 10))
+	}
+	sa := strings.Join(b, "")
+	return sa
 }
